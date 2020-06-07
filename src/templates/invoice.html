@@ -1,0 +1,133 @@
+{% extends "vertical-base.html" %}
+{% load static %}
+
+{% block page-content %}
+<!-- Start content -->
+<div class="content">
+    <div class="container-fluid">
+     <div class="row">
+            <div class="col-12">
+                <div class="card m-b-30">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="invoice-title">
+                                    <h4 class="float-right font-16"><strong>商品结算</strong></h4>
+                                    <h3 class="m-t-0">
+{#                                        <img src="../static/assets/images/logo-dark.png" alt="logo" height="24"/>#}
+                                        <a href="datatable" class="logo">
+                                            <span class="logo-light">
+                                                    <i class="mdi mdi-camera-control"></i> 账单
+                                            </span>
+                                        </a>
+                                    </h3>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <address>
+                                            <strong>付款人:</strong><br>
+                                            用户<br>
+                                        </address>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <address>
+                                            <strong>收款人</strong><br>
+                                            SHOP连锁店<br>
+                                        </address>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 m-t-30">
+                                        <address>
+                                            <strong>付款方式</strong><br>
+                                            现结<br>
+                                        </address>
+                                    </div>
+                                    <div class="col-6 m-t-30 text-right">
+                                        <address>
+                                            <strong>日期:</strong><br>
+                                            2020年6月1日<br><br>
+                                        </address>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="panel panel-default">
+                                    <div class="p-2">
+                                        <h3 class="panel-title font-20"><strong>订单详情</strong></h3>
+                                    </div>
+                                    <div class="">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <td><strong>物品</strong></td>
+                                                    <td class="text-center"><strong>单价</strong></td>
+                                                    <td class="text-center"><strong>数量</strong>
+                                                    </td>
+                                                    <td class="text-right"><strong>总价</strong></td>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="body" name="body">
+                                                <!-- foreach ($order->lineItems as $line) or some such thing here -->
+                                                <tr>
+                                                    <td class="no-line"></td>
+                                                    <td class="no-line"></td>
+                                                    <td class="no-line text-center">
+                                                     <strong>合计</strong></td>
+                                                    <td class="no-line text-right"><h4 class="m-0">¥0</h4></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <div class="d-print-none mo-mt-2">
+                                            <div class="float-right">
+                                                <a href="javascript:window.print()" class="btn btn-success waves-effect waves-light"><i class="fa fa-print"></i></a>
+                                                <a href="#" class="btn btn-primary waves-effect waves-light">确认结账</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div> <!-- end row -->
+
+                    </div>
+                </div>
+            </div> <!-- end col -->
+        </div> <!-- end row -->
+    </div>
+    <!-- container-fluid -->
+</div>
+<!-- content -->
+{% endblock %}
+{% block custom_operation %}
+<script>
+    //与后台进行交互得到数据
+    html=""
+    var ret={{Ret|safe}}
+    for(var i=0;i<ret.length;i++){
+        var each=ret[i]
+        console.log(each)
+        html+="<tr>"
+        html+="<td>"+each[0]+"</td>"
+        html+="<td class=\"text-center\">"+each[2]+"</td>"
+        html+="<td class=\"text-center\">"+each[1]+"</td>"
+        html+="<td class=\"text-right\">"+(each[1]*each[2]).toFixed(2)+"</td>"
+        html+="<tr>"
+    }
+    html+="<tr>"
+    html+="<td class=\"no-line\"></td>"
+    html+="<td class=\"no-line\"></td>"
+    html+="<td class=\"no-line text-center\"><strong>合计</strong></td>"
+    html+="<td class=\"no-line text-right\"><h4 class\"m-0\">¥{{sum}}</h4></td>"
+    html+="<tr>"
+    document.getElementById("body").innerHTML=html;
+</script>
+
+{% endblock %}

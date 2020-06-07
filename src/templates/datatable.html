@@ -1,0 +1,151 @@
+{% extends "vertical-base.html" %}
+{% block page-content %}
+<!-- Start content -->
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card m-b-30">
+                    <div class="card-body">
+
+                        <h4 class="mt-0 header-title">所有商品</h4>
+                        <p class="sub-title">这是超市所有的商品详情及库存，供用户自由选择</code>.
+                        </p>
+
+                        <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                            <thead>
+                            <tr>
+                                <th>商品ID</th>
+                                <th>商品名称</th>
+                                <th>库存量</th>
+                                <th>单价</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tfoot>
+                            <tr>
+                                <th>商品ID</th>
+                                <th>商品名称</th>
+                                <th>库存量</th>
+                                <th>单价</th>
+                                <th>操作</th>
+                            </tr>
+                            </tfoot>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>System Architect</td>
+                                    <td>61</td>
+                                    <td>19.8</td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div> <!-- end col -->
+        </div> <!-- end row -->
+
+    </div>
+    <!-- container-fluid -->
+
+</div>
+<!-- content -->
+{% endblock %}
+{% block cutsom_js %}
+    <script>
+      $.fn.dataTable.ext.errMode = "none";
+
+      //汉化
+    var dataTable=$('#datatable').DataTable({
+        fixedHeader: true,
+        fixedColumns: {
+            leftColumns: 1
+        },
+        // ordering: false,
+        "oLanguage": {
+            "aria": {
+                "sortAscending": ": activate to sort column ascending",
+                "sortDescending": ": activate to sort column descending"
+            },
+            "sProcessing":   "处理中...",
+            "sLengthMenu":   "_MENU_ 商品/页",
+            "sZeroRecords":  "<span'>没有找到对应的商品！</span>",
+            "sInfo":         "显示第 _START_ 至 _END_ 个商品，共 _TOTAL_ 个",
+            "sInfoEmpty":    "显示第 0 至 0 个商品，共 0 个",
+            "sInfoFiltered": "(由 _MAX_ 个商品过滤)",
+            "sInfoPostFix":  "",
+            "sSearch":       "搜索:",
+            "oPaginate": {
+                "sFirst":    "首页",
+                "sPrevious": "上页",
+                "sNext":     "下页",
+                "sLast":     "末页"
+            }
+        },
+        "columnDefs": [
+            {
+                "targets":4,
+                "mRender":
+                    function(data, type, full) {
+                        sReturn=""
+                        sReturn=sReturn+"<button type=\"button\" class=\"buy-button btn btn-primary btn-sm btn-rounded m-b-10 m-l-5\">购买</button>";
+                        return sReturn;
+                    },
+            },
+            {
+                "targets":[1,4],
+                "orderable": false,
+            },
+        ],
+        "aLengthMenu": [[5,10,20,-1],[5,10,20,"所有商品"]],
+    });
+    getAllRecord();
+    //请求所有商品
+    function getAllRecord(){
+        var dataTable = $('#datatable').DataTable();
+        dataTable.clear().draw(); //清除表格数据
+        var url="datatable";
+        {#console.log(url);#}
+        $.get(url, function (json) {
+            {#console.log((json));#}
+            Data = jQuery.parseJSON(json);
+            for (var i = 0; i < Data.length; i++) {
+                var id = Data[i]["pk"];
+                var name = Data[i]["fields"]["name"];
+                var count = Data[i]["fields"]["count"];
+                var price = Data[i]["fields"]["price"];
+                {#console.log("name:",name);#}
+                dataTable.row.add([id,name,count,price]).draw().node();
+            }
+        });
+    }
+    //购买商品
+    $('#datatable tbody').on('click', '.buy-button', function (event) {
+        var row = dataTable.row($(this).parents("tr"));
+        var data = row.data();
+        var id = data[0];
+        var tds = $(this).parents("tr").children();
+         $.each(tds, function (i, val) {
+            var jqob = $(val);
+            if(i==2){
+                var txt = jqob.text();
+                console.log(txt)
+                if(txt>0){
+                     jqob.html(txt-1);
+                    dataTable.cell(jqob).data(txt-1);
+                    Dialog.showSuccess("已加入购物车","操作成功");
+                }else{
+                    Dialog.showError("商品已经售空","错误提示")
+                }
+            }
+        });
+
+        url="buy?id="+id;
+        $.get(url, function (json) {
+        });
+
+    });
+    </script>
+{% endblock %}
