@@ -9,9 +9,11 @@ A simple shop that customers can select goods and view their order with Django
 
 #### 目录结构
 
-├─database //商品数据
-├─output //项目截图 
-└─src //Django项目源码 
+├─database 		//商品数据
+
+├─output 			//项目截图 
+
+└─src 					//Django项目源码 
 
 
 
@@ -28,3 +30,7 @@ A simple shop that customers can select goods and view their order with Django
 - 商品结算
 
 ![6](output/6.png)
+
+- 打印账单
+
+![6](output/7.png)
